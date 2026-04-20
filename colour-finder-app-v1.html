@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Find Your Best Colours</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 32px 16px;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f1eb;
+      color: #1f1f1f;
+    }
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+    }
+    p.lead {
+      margin: 0 0 24px;
+      color: #555;
+    }
+    .panel {
+      background: #fff;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 16px 0 8px;
+      font-weight: bold;
+    }
+    select, button {
+      width: 100%;
+      font-size: 16px;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #cfcfcf;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 20px;
+      background: #5c3df0;
+      color: #fff;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.96;
+    }
+    #result {
+      min-height: 120px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+    .swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .swatch {
+      width: 125px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .swatch-colour {
+      height: 72px;
+    }
+    .swatch-name {
+      padding: 10px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    ul {
+      margin: 10px 0 0;
+      padding-left: 20px;
+    }
+    .muted {
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Find the clothing colours that suit you best</h1>
+    <p class="lead">Choose your hair colour, eye colour, and skin complexion, then press the button to see your recommended palette.</p>
+
+    <div class="panel">
+      <label for="hair">Hair colour</label>
+      <select id="hair">
+        <option value="">Select hair colour</option>
+        <option value="light_blonde">Light blonde</option>
+        <option value="golden_blonde">Golden blonde</option>
+        <option value="ash_blonde">Ash blonde</option>
+        <option value="red_auburn">Red / auburn</option>
+        <option value="light_brown">Light brown</option>
+        <option value="medium_brown">Medium brown</option>
+        <option value="dark_brown">Dark brown</option>
+        <option value="black">Black</option>
+        <option value="grey_white">Grey / white</option>
+      </select>
+
+      <label for="eyes">Eye colour</label>
+      <select id="eyes">
+        <option value="">Select eye colour</option>
+        <option value="light_blue">Light blue</option>
+        <option value="deep_blue">Deep blue</option>
+        <option value="green">Green</option>
+        <option value="grey">Grey</option>
+        <option value="hazel">Hazel</option>
+        <option value="light_brown">Light brown</option>
+        <option value="dark_brown">Dark brown</option>
+        <option value="very_dark_brown">Very dark brown</option>
+      </select>
+
+      <label for="skin">Skin complexion</label>
+      <select id="skin">
+        <option value="">Select skin complexion</option>
+        <option value="fair_cool">Fair, cool or pink undertone</option>
+        <option value="fair_warm">Fair, warm or peach undertone</option>
+        <option value="light_neutral">Light, neutral undertone</option>
+        <option value="medium_cool">Medium, cool undertone</option>
+        <option value="medium_warm">Medium, warm or olive undertone</option>
+        <option value="deep_cool">Deep, cool undertone</option>
+        <option value="deep_warm">Deep, warm undertone</option>
+      </select>
+
+      <button id="findButton" type="button">Find my best colours</button>
+    </div>
+
+    <div class="panel" id="result">
+      <p class="muted">Your result will appear here after you press the button.</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var palettes = {
+        spring: {
+          title: "Spring",
+          badge: "#fde68a",
+          description: "Warm, fresh and clear colours usually suit you best.",
+          colours: [
+            ["Coral", "#ff7f6e"],
+            ["Peach", "#ffb38a"],
+            ["Warm turquoise", "#38c6c6"],
+            ["Apple green", "#8cc63f"],
+            ["Butter yellow", "#f6df72"],
+            ["Camel", "#c89b6d"]
+          ],
+          neutrals: ["Ivory", "Cream", "Camel", "Light tan", "Warm navy"]
+        },
+        summer: {
+          title: "Summer",
+          badge: "#dbeafe",
+          description: "Cool, soft and muted shades usually flatter you most.",
+          colours: [
+            ["Powder blue", "#a9c7e8"],
+            ["Rose", "#d694a5"],
+            ["Lavender", "#b8a3d1"],
+            ["Soft navy", "#506b8c"],
+            ["Sage", "#9eb4a3"],
+            ["Berry", "#a05b7f"]
+          ],
+          neutrals: ["Soft white", "Cool grey", "Taupe", "Mushroom", "Soft navy"]
+        },
+        autumn: {
+          title: "Autumn",
+          badge: "#fed7aa",
+          description: "Warm, rich and earthy colours are probably your strongest zone.",
+          colours: [
+            ["Olive", "#7b8b45"],
+            ["Rust", "#b65a3a"],
+            ["Terracotta", "#c96f4a"],
+            ["Forest green", "#355e3b"],
+            ["Mustard", "#c49b2c"],
+            ["Chocolate", "#5b3a29"]
+          ],
+          neutrals: ["Cream", "Olive", "Camel", "Warm brown", "Soft navy"]
+        },
+        winter: {
+          title: "Winter",
+          badge: "#ddd6fe",
+          description: "Cool, deep and high-contrast colours usually work best on you.",
+          colours: [
+            ["Cobalt", "#2554c7"],
+            ["Emerald", "#008f68"],
+            ["True red", "#d72638"],
+            ["Fuchsia", "#d63384"],
+            ["Royal purple", "#6c2eb9"],
+            ["Charcoal", "#36454f"]
+          ],
+          neutrals: ["Black", "Pure white", "Charcoal", "Navy", "Cool grey"]
+        }
+      };
+
+      function pretty(value) {
+        var map = {
+          light_blonde: "light blonde",
+          golden_blonde: "golden blonde",
+          ash_blonde: "ash blonde",
+          red_auburn: "red / auburn",
+          light_brown: "light brown",
+          medium_brown: "medium brown",
+          dark_brown: "dark brown",
+          black: "black",
+          grey_white: "grey / white",
+          light_blue: "light blue",
+          deep_blue: "deep blue",
+          green: "green",
+          grey: "grey",
+          hazel: "hazel",
+          very_dark_brown: "very dark brown",
+          fair_cool: "fair, cool or pink undertone",
+          fair_warm: "fair, warm or peach undertone",
+          light_neutral: "light, neutral undertone",
+          medium_cool: "medium, cool undertone",
+          medium_warm: "medium, warm or olive undertone",
+          deep_cool: "deep, cool undertone",
+          deep_warm: "deep, warm undertone"
+        };
+        return map[value] || value;
+      }
+
+      function determineSeason(hair, eyes, skin) {
+        var warmHair = ["golden_blonde", "red_auburn", "light_brown", "medium_brown"];
+        var coolHair = ["light_blonde", "ash_blonde", "dark_brown", "black", "grey_white"];
+        var warmEyes = ["green", "hazel", "light_brown"];
+        var coolEyes = ["light_blue", "deep_blue", "grey", "dark_brown", "very_dark_brown"];
+        var warmSkin = ["fair_warm", "medium_warm", "deep_warm"];
+        var coolSkin = ["fair_cool", "medium_cool", "deep_cool"];
+
+        var warm = 0;
+        var cool = 0;
+        var light = 0;
+        var deep = 0;
+
+        if (warmHair.indexOf(hair) !== -1) warm += 2;
+        if (coolHair.indexOf(hair) !== -1) cool += 2;
+        if (warmEyes.indexOf(eyes) !== -1) warm += 1;
+        if (coolEyes.indexOf(eyes) !== -1) cool += 1;
+        if (warmSkin.indexOf(skin) !== -1) warm += 3;
+        if (coolSkin.indexOf(skin) !== -1) cool += 3;
+        if (skin === "light_neutral") { warm += 1; cool += 1; }
+
+        if (["light_blonde", "golden_blonde", "ash_blonde"].indexOf(hair) !== -1) light += 2;
+        if (["light_blue", "grey"].indexOf(eyes) !== -1) light += 1;
+        if (["fair_cool", "fair_warm", "light_neutral"].indexOf(skin) !== -1) light += 2;
+
+        if (["dark_brown", "black"].indexOf(hair) !== -1) deep += 2;
+        if (["dark_brown", "very_dark_brown"].indexOf(eyes) !== -1) deep += 1;
+        if (["deep_cool", "deep_warm"].indexOf(skin) !== -1) deep += 2;
+
+        if (warm >= cool) {
+          return light >= deep ? "spring" : "autumn";
+        }
+        return light >= deep ? "summer" : "winter";
+      }
+
+      function renderResult() {
+        var hair = document.getElementById("hair").value;
+        var eyes = document.getElementById("eyes").value;
+        var skin = document.getElementById("skin").value;
+        var result = document.getElementById("result");
+
+        if (!hair || !eyes || !skin) {
+          result.innerHTML = "<p><strong>Missing information.</strong> Please select your hair colour, eye colour, and skin complexion first.</p>";
+          return;
+        }
+
+        var seasonKey = determineSeason(hair, eyes, skin);
+        var palette = palettes[seasonKey];
+        var swatches = "";
+        for (var i = 0; i < palette.colours.length; i++) {
+          swatches += '<div class="swatch">' +
+            '<div class="swatch-colour" style="background:' + palette.colours[i][1] + ';"></div>' +
+            '<div class="swatch-name">' + palette.colours[i][0] + '</div>' +
+            '</div>';
+        }
+
+        var neutrals = "<ul>";
+        for (var j = 0; j < palette.neutrals.length; j++) {
+          neutrals += "<li>" + palette.neutrals[j] + "</li>";
+        }
+        neutrals += "</ul>";
+
+        result.innerHTML =
+          '<div class="badge" style="background:' + palette.badge + ';">Best match: ' + palette.title + '</div>' +
+          '<h2>' + palette.title + ' palette</h2>' +
+          '<p>Based on your selections — <strong>' + pretty(hair) + '</strong> hair, <strong>' + pretty(eyes) + '</strong> eyes, and <strong>' + pretty(skin) + '</strong> skin — your best match is usually <strong>' + palette.title + '</strong>.</p>' +
+          '<p>' + palette.description + '</p>' +
+          '<h3>Best clothing colours</h3>' +
+          '<div class="swatches">' + swatches + '</div>' +
+          '<h3>Best neutrals</h3>' +
+          neutrals;
+      }
+
+      var btn = document.getElementById("findButton");
+      if (btn) {
+        btn.addEventListener("click", renderResult);
+      }
+    })();
+  </script>
+</body>
+</html>
