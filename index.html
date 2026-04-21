@@ -1,112 +1,946 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Colour Fit</title>
-
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #e6f4ea;
-  color: #1d1916;
-  padding: 20px;
-}
-
-.container {
-  max-width: 600px;
-  margin: auto;
-}
-
-h1 {
-  font-size: 32px;
-}
-
-select, button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  margin-bottom: 15px;
-}
-
-button {
-  background: black;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.result {
-  margin-top: 20px;
-  font-weight: bold;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Colour Fit</title>
+  <style>
+    :root{
+      --bg:#e6f4ea;
+      --bg2:#d4ebdd;
+      --card:rgba(255,255,255,.84);
+      --line:rgba(28,24,20,.08);
+      --text:#1d1916;
+      --muted:#6f675f;
+      --accent:#22201d;
+      --shadow:0 18px 40px rgba(31,25,22,.08);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(255,255,255,.75), transparent 25%),
+        radial-gradient(circle at 100% 10%, rgba(200,230,210,.4), transparent 24%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    }
+    .shell{max-width:1240px;margin:0 auto;padding:22px 18px 64px}
+    .hero{padding:32px 8px 24px;text-align:center}
+    .kicker{
+      color:#6a8f74;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:12px;
+    }
+    h1{
+      margin:0;
+      font-size:clamp(38px,6vw,72px);
+      line-height:.96;
+      letter-spacing:-.04em;
+      font-family:Georgia,"Times New Roman",serif;
+      font-weight:700;
+    }
+    .hero p{
+      max-width:820px;
+      margin:18px auto 0;
+      color:var(--muted);
+      font-size:clamp(16px,2vw,19px);
+      line-height:1.7;
+    }
+    .layout{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:24px;
+      margin-top:16px;
+    }
+    @media (min-width:1020px){
+      .layout{grid-template-columns:420px 1fr;align-items:start}
+    }
+    .card{
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.6);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      padding:24px;
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+    }
+    .card h2{margin:0 0 10px;font-size:28px;letter-spacing:-.03em}
+    .sub{color:var(--muted);line-height:1.65;margin:0 0 18px}
+    .field{margin-bottom:16px}
+    label{
+      display:block;
+      margin-bottom:6px;
+      font-size:13px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+    .hint{
+      font-size:13px;
+      color:var(--muted);
+      margin:4px 0 10px;
+      line-height:1.5;
+    }
+    select{
+      width:100%;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.92);
+      color:var(--text);
+      border-radius:16px;
+      padding:14px;
+      font-size:16px;
+      outline:none;
+    }
+    select:focus{
+      border-color:rgba(34,32,29,.26);
+      box-shadow:0 0 0 4px rgba(34,32,29,.06);
+    }
+    .segmented{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:8px;
+      margin-top:8px;
+    }
+    .segmented button{
+      padding:13px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.88);
+      color:var(--text);
+      font-weight:700;
+      cursor:pointer;
+    }
+    .segmented button.active{
+      background:var(--accent);
+      color:#fff;
+      border-color:var(--accent);
+    }
+    .buttons{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+    .btn{
+      border:none;
+      border-radius:999px;
+      padding:14px 18px;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+      transition:transform .08s ease, opacity .2s ease;
+    }
+    .btn:hover{opacity:.96}
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{background:var(--accent);color:#fff;flex:1 1 220px}
+    .btn-secondary{background:rgba(255,255,255,.88);color:var(--text);border:1px solid var(--line)}
+    .note{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+    .placeholder{
+      min-height:560px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:28px;
+      color:var(--muted);
+    }
+    .placeholder h3{
+      margin:8px 0 8px;
+      font-size:30px;
+      color:var(--text);
+      font-family:Georgia,serif;
+      font-weight:700;
+    }
+    .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:start;
+      gap:20px;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:800;
+      background:rgba(0,0,0,.06);
+      margin-bottom:12px;
+    }
+    .title{
+      margin:0;
+      font-size:clamp(34px,5vw,58px);
+      line-height:.95;
+      letter-spacing:-.04em;
+      font-family:Georgia,serif;
+      font-weight:700;
+    }
+    .title-copy{
+      margin-top:12px;
+      color:var(--muted);
+      max-width:760px;
+      line-height:1.75;
+    }
+    .score{
+      min-width:240px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:rgba(255,255,255,.78);
+      padding:16px;
+    }
+    .score h3{margin:0 0 12px;font-size:16px}
+    .meter{margin-bottom:12px}
+    .meter-label{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+    .bar{
+      height:10px;
+      border-radius:999px;
+      background:rgba(0,0,0,.07);
+      overflow:hidden;
+    }
+    .bar span{
+      display:block;
+      height:100%;
+      border-radius:inherit;
+    }
+    .section{
+      margin-top:26px;
+      padding-top:24px;
+      border-top:1px solid var(--line);
+    }
+    .section h3{
+      margin:0 0 10px;
+      font-size:20px;
+      letter-spacing:-.02em;
+    }
+    .section p{
+      margin:0 0 12px;
+      color:var(--muted);
+      line-height:1.7;
+    }
+    .swatches{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+      gap:14px;
+      margin-top:14px;
+    }
+    .swatch{
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      background:#fff;
+      box-shadow:0 8px 18px rgba(0,0,0,.04);
+    }
+    .swatch-color{height:82px}
+    .swatch-name{
+      padding:11px 10px 13px;
+      font-size:13px;
+      font-weight:800;
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+    .chip{
+      padding:10px 13px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.86);
+      font-size:13px;
+      font-weight:700;
+    }
+    .grid-2{
+      display:grid;
+      gap:14px;
+      grid-template-columns:1fr;
+      margin-top:14px;
+    }
+    @media (min-width:760px){
+      .grid-2{grid-template-columns:repeat(2,1fr)}
+    }
+    .tile{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      background:rgba(255,255,255,.74);
+    }
+    .tile strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:15px;
+    }
+    .tile span{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+    }
+    .mini-columns{
+      display:grid;
+      gap:14px;
+      grid-template-columns:1fr;
+      margin-top:12px;
+    }
+    @media (min-width:760px){
+      .mini-columns{grid-template-columns:1fr 1fr}
+    }
+    .footer{
+      margin-top:22px;
+      padding-top:16px;
+      border-top:1px solid var(--line);
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.65;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="shell">
+    <section class="hero">
+      <div class="kicker">Colour Fit</div>
+      <h1>Find the colours that suit you best</h1>
+      <p>
+        Pick your features, choose your contrast level, and get a colour palette with actual swatches and outfit ideas.
+      </p>
+    </section>
 
-<div class="container">
-<h1>Find your best colours</h1>
-<p>Pick your features and we’ll suggest colours that suit you.</p>
+    <section class="layout">
+      <div class="card">
+        <h2>Your profile</h2>
+        <p class="sub">Pick what matches you best. Better inputs give you a better result.</p>
 
-<label>Hair colour</label>
-<select id="hair">
-<option value="">Select</option>
-<option>Blonde</option>
-<option>Brown</option>
-<option>Black</option>
-<option>Red</option>
-</select>
+        <div class="field">
+          <label for="hair">Hair colour</label>
+          <select id="hair">
+            <option value="">Select hair colour</option>
+            <option value="light_blonde">Light blonde</option>
+            <option value="golden_blonde">Golden blonde</option>
+            <option value="ash_blonde">Ash blonde</option>
+            <option value="red_auburn">Red / auburn</option>
+            <option value="light_brown">Light brown</option>
+            <option value="medium_brown">Medium brown</option>
+            <option value="dark_brown">Dark brown</option>
+            <option value="black">Black</option>
+            <option value="grey_white">Grey / white</option>
+          </select>
+        </div>
 
-<label>Eye colour</label>
-<select id="eyes">
-<option value="">Select</option>
-<option>Blue</option>
-<option>Green</option>
-<option>Brown</option>
-</select>
+        <div class="field">
+          <label for="eyes">Eye colour</label>
+          <select id="eyes">
+            <option value="">Select eye colour</option>
+            <option value="light_blue">Light blue</option>
+            <option value="deep_blue">Deep blue</option>
+            <option value="green">Green</option>
+            <option value="grey">Grey</option>
+            <option value="hazel">Hazel</option>
+            <option value="light_brown">Light brown</option>
+            <option value="dark_brown">Dark brown</option>
+            <option value="very_dark_brown">Very dark brown</option>
+          </select>
+        </div>
 
-<label>Skin tone</label>
-<select id="skin">
-<option value="">Select</option>
-<option>Fair</option>
-<option>Medium</option>
-<option>Dark</option>
-</select>
+        <div class="field">
+          <label for="skin">Skin complexion</label>
+          <select id="skin">
+            <option value="">Select complexion</option>
+            <option value="fair_cool">Fair, cool or pink undertone</option>
+            <option value="fair_warm">Fair, warm or peach undertone</option>
+            <option value="light_neutral">Light, neutral undertone</option>
+            <option value="medium_cool">Medium, cool undertone</option>
+            <option value="medium_warm">Medium, warm or olive undertone</option>
+            <option value="deep_cool">Deep, cool undertone</option>
+            <option value="deep_warm">Deep, warm undertone</option>
+          </select>
+        </div>
 
-<label>Natural contrast level</label>
-<p style="font-size:13px; color:#555;">
-How much your features stand out from each other (e.g. light skin + dark hair = high contrast).
-</p>
-<select id="contrast">
-<option value="">Select</option>
-<option>Low</option>
-<option>Medium</option>
-<option>High</option>
-</select>
+        <div class="field">
+          <label for="contrast">Natural contrast level</label>
+          <p class="hint">How much your features stand out from each other, like light skin with dark hair being high contrast.</p>
+          <select id="contrast">
+            <option value="">Select contrast level</option>
+            <option value="low">Low contrast</option>
+            <option value="medium">Medium contrast</option>
+            <option value="high">High contrast</option>
+          </select>
+        </div>
 
-<button onclick="showResult()">Show my colours</button>
+        <div class="field">
+          <label>Styling examples</label>
+          <div class="segmented">
+            <button type="button" class="style-gender active" data-gender="women">Women</button>
+            <button type="button" class="style-gender" data-gender="men">Men</button>
+          </div>
+        </div>
 
-<div class="result" id="result"></div>
-</div>
+        <div class="buttons">
+          <button class="btn btn-primary" id="analyzeButton" type="button">Show my colours</button>
+          <button class="btn btn-secondary" id="resetButton" type="button">Reset</button>
+        </div>
 
-<script>
-function showResult() {
-  const hair = document.getElementById("hair").value;
-  const eyes = document.getElementById("eyes").value;
-  const skin = document.getElementById("skin").value;
-  const contrast = document.getElementById("contrast").value;
+        <div class="note">
+          This is a practical guide, not a full in-person colour analysis. But it should still get you much closer than guessing.
+        </div>
+      </div>
 
-  if (!hair || !eyes || !skin || !contrast) {
-    document.getElementById("result").innerText = "Fill everything in first.";
-    return;
-  }
+      <div class="card" id="result">
+        <div class="placeholder">
+          <div>
+            <div class="kicker" style="margin-bottom:8px;">Your result</div>
+            <h3>Your palette will show here</h3>
+            <p style="max-width:540px;margin:0 auto;line-height:1.8;">
+              Choose your features, pick men’s or women’s styling examples, and hit the button.
+              You’ll get your best colours, actual swatches, your safest neutrals, colours to avoid, and outfit ideas.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 
-  document.getElementById("result").innerText =
-    "You suit clean, balanced colours. Avoid anything too harsh or too dull.";
-}
-</script>
+  <script>
+    (function(){
+      let styleGender = "women";
 
+      const palettes = {
+        "Light Spring": {
+          badge:"#f1d281",
+          desc:"You suit warm, fresh, light colours better than heavy, muted or icy shades.",
+          best:[["Light coral","#ff907f"],["Apricot","#f3b16f"],["Warm aqua","#63d1d0"],["Apple green","#99c94e"],["Buttercream","#f2e0a2"],["Soft camel","#caa27a"],["Clear ivory","#fbf4e8"],["Honey peach","#f8c7a6"]],
+          neutrals:["clear ivory","soft camel","warm beige","light stone","soft navy"],
+          avoid:["black","burgundy","cool grey","dusty mauve","icy pink"],
+          women:{
+            outfits:[
+              ["Weekend","Apricot knit + ivory trousers + light tan sandals"],
+              ["Work","Warm aqua blouse + camel tailoring + gold jewellery"],
+              ["Evening","Coral dress + cream heel + soft beige clutch"],
+              ["Cold weather","Oatmeal coat + ivory knit + light camel trousers"]
+            ],
+            extras:[
+              ["Jewellery","Yellow gold usually works better than bright silver."],
+              ["Makeup","Peach, apricot, warm rose and fresh coral are safe bets."]
+            ]
+          },
+          men:{
+            outfits:[
+              ["Weekend","Peach polo + stone chinos + white leather sneakers"],
+              ["Business casual","Cream oxford + light camel trousers + tan loafers"],
+              ["Layers","Soft navy jacket + ivory tee + beige chinos"],
+              ["Holiday","Warm aqua linen shirt + sand shorts + brown sandals"]
+            ],
+            extras:[
+              ["Metal","Yellow gold and brushed bronze usually suit you better than stark silver."],
+              ["Easy start","Buy cream, camel and soft navy first."]
+            ]
+          }
+        },
+        "True Spring": {
+          badge:"#ffd269",
+          desc:"Warm, bright and clean colours usually look strongest on you.",
+          best:[["Coral","#ff7d69"],["Tomato red","#e75036"],["Warm turquoise","#3bc7c3"],["Grass green","#66b043"],["Golden yellow","#f2c43f"],["Peach","#ffb78f"],["Camel","#c89567"],["Cream","#f8efde"]],
+          neutrals:["cream","camel","warm navy","toffee","light olive"],
+          avoid:["charcoal","fuchsia","icy blue","cool taupe","blue-black"],
+          women:{
+            outfits:[
+              ["Daywear","Coral knit + cream trousers + tan slides"],
+              ["Summer dinner","Turquoise dress + gold hoop + camel sandal"],
+              ["Work","Cream blouse + warm navy blazer + toffee trousers"],
+              ["Weekend","Golden yellow tee + pale denim + tan bag"]
+            ],
+            extras:[
+              ["Jewellery","Yellow gold nearly always works better than silver."],
+              ["Makeup","Fresh coral, clear peach and warm rose suit you well."]
+            ]
+          },
+          men:{
+            outfits:[
+              ["Weekend","Coral polo + stone shorts + white sneakers"],
+              ["Business casual","Cream shirt + camel chinos + medium brown loafers"],
+              ["Sharp casual","Warm navy overshirt + ivory tee + tan belt"],
+              ["Holiday","Turquoise linen shirt + cream shorts + brown sandals"]
+            ],
+            extras:[
+              ["Metal","Gold or bronze usually looks better than cold steel."],
+              ["Easy start","Cream, camel and warm navy will do most of the work."]
+            ]
+          }
+        },
+        "Light Summer": {
+          badge:"#dee8ff",
+          desc:"Cool, light and soft colours usually flatter you most.",
+          best:[["Powder blue","#b9d1ec"],["Soft rose","#dfa5b6"],["Lavender","#c6b2de"],["Soft mint","#c7dfd4"],["Periwinkle","#a8bae9"],["Dusty berry","#b07b95"],["Cool taupe","#b0a49b"],["Soft white","#f5f2ef"]],
+          neutrals:["soft white","cool taupe","dove grey","mushroom","soft navy"],
+          avoid:["orange","mustard","jet black","hot red","acid yellow"],
+          women:{
+            outfits:[
+              ["Daywear","Powder blue knit + cool white denim + pale grey flats"],
+              ["Office","Soft rose blouse + dove-grey tailoring + silver jewellery"],
+              ["Evening","Lavender dress + soft metallic heel"],
+              ["Winter","Mushroom coat + soft white knit + slate trousers"]
+            ],
+            extras:[
+              ["Jewellery","Silver, platinum and pearls usually suit you best."],
+              ["Makeup","Rose, pink-beige, soft berry and cool nude work well."]
+            ]
+          },
+          men:{
+            outfits:[
+              ["Weekend","Powder blue knit + pale denim + white trainers"],
+              ["Business casual","Soft white shirt + cool grey trousers + navy suede loafers"],
+              ["Dinner","Lavender shirt + mushroom chinos + grey belt"],
+              ["Layering","Soft navy overshirt + white tee + cool taupe trousers"]
+            ],
+            extras:[
+              ["Metal","Silver usually looks cleaner than yellow gold."],
+              ["Easy start","Soft white, grey, mushroom and soft navy are a strong base."]
+            ]
+          }
+        },
+        "True Summer": {
+          badge:"#d5e3ff",
+          desc:"Cool, refined and slightly muted colours are your lane.",
+          best:[["Rose","#d592a5"],["Blue-grey","#8ea7bf"],["Lavender","#b7a0d4"],["Sage","#9db3a3"],["Berry","#9d5d7f"],["Slate blue","#657fa1"],["Mauve taupe","#a7979e"],["Soft white","#f4f1ee"]],
+          neutrals:["soft navy","cool grey","soft white","taupe","mauve-beige"],
+          avoid:["mustard","orange","camel","hard black","warm tomato"],
+          women:{
+            outfits:[
+              ["Work","Soft white shirt + slate trousers + silver jewellery"],
+              ["Weekend","Rose knit + pale blue jeans + cool taupe bag"],
+              ["Evening","Berry dress + slate heel"],
+              ["Winter","Blue-grey coat + mauve knit + charcoal-blue trouser"]
+            ],
+            extras:[
+              ["Jewellery","Silver, white gold and platinum usually win."],
+              ["Makeup","Soft berry, rosewood, mauve-pink and cool nude."]
+            ]
+          },
+          men:{
+            outfits:[
+              ["Office casual","Soft white shirt + slate trousers + cool brown shoes"],
+              ["Weekend","Blue-grey tee + stone jeans + white sneakers"],
+              ["Dinner","Berry knit + charcoal-blue trousers + grey suede loafers"],
+              ["Layers","Soft navy jacket + rose tee + taupe chinos"]
+            ],
+            extras:[
+              ["Metal","Silver usually works better than yellow gold."],
+              ["Easy start","Soft navy, cool grey and off-white will carry a lot."]
+            ]
+          }
+        },
+        "Soft Autumn": {
+          badge:"#e8c4a4",
+          desc:"Muted warmth usually looks best on you. Earthy tones beat bright ones.",
+          best:[["Soft olive","#8a9360"],["Muted teal","#537f80"],["Terracotta","#c27a59"],["Moss","#78825a"],["Dusty rust","#af674f"],["Warm taupe","#aa9584"],["Cocoa","#7b5c47"],["Cream","#eee2ce"]],
+          neutrals:["cream","warm taupe","olive","cocoa","soft navy"],
+          avoid:["pure white","jet black","icy pastel","electric blue","hot pink"],
+          women:{
+            outfits:[
+              ["Daywear","Cream knit + olive trousers + tan leather slide"],
+              ["Office","Muted teal blouse + taupe tailoring + bronze jewellery"],
+              ["Dinner","Terracotta dress + cocoa sandal"],
+              ["Layers","Moss coat + cream tee + dark denim"]
+            ],
+            extras:[
+              ["Jewellery","Soft gold, bronze and antique finishes usually flatter best."],
+              ["Makeup","Terracotta, caramel nude, muted rust and warm rose."]
+            ]
+          },
+          men:{
+            outfits:[
+              ["Weekend","Muted teal polo + stone chinos + tan trainers"],
+              ["Business casual","Cream shirt + olive trousers + dark brown loafers"],
+              ["Evening","Cocoa knit + warm taupe trouser + suede boot"],
+              ["Layers","Moss overshirt + cream tee + dark denim"]
+            ],
+            extras:[
+              ["Metal","Bronze, brass and warm gold usually beat bright chrome."],
+              ["Easy start","Cream, cocoa, olive and taupe make this easy."]
+            ]
+          }
+        },
+        "True Autumn": {
+          badge:"#dfa469",
+          desc:"Rich warmth and earthy depth are usually your advantage.",
+          best:[["Olive","#7b8b45"],["Rust","#b65a3a"],["Forest green","#355e3b"],["Mustard","#c49b2c"],["Petrol blue","#305f67"],["Brick red","#964332"],["Chocolate","#5b3a29"],["Cream","#efe1c9"]],
+          neutrals:["cream","camel","olive","warm brown","dark petrol"],
+          avoid:["fuchsia","icy blue","cool grey","pure white","blue-black"],
+          women:{
+            outfits:[
+              ["Daywear","Cream blouse + olive trouser + tan sandal"],
+              ["Office","Petrol dress + camel blazer + gold jewellery"],
+              ["Weekend","Rust knit + dark denim + brown leather bag"],
+              ["Cold weather","Chocolate coat + cream knit + tobacco trouser"]
+            ],
+            extras:[
+              ["Jewellery","Gold usually works better than silver."],
+              ["Makeup","Brick, terracotta, cinnamon and warm red-brown suit you."]
+            ]
+          },
+          men:{
+            outfits:[
+              ["Business casual","Cream shirt + olive chinos + brown derby shoes"],
+              ["Weekend","Rust polo + dark denim + tan boot"],
+              ["Cold weather","Chocolate knit + camel coat + dark brown trousers"],
+              ["Sharp casual","Petrol overshirt + cream tee + tobacco chinos"]
+            ],
+            extras:[
+              ["Metal","Gold and warm bronze usually beat cold steel."],
+              ["Easy start","Cream, olive, chocolate and camel are the backbone."]
+            ]
+          }
+        },
+        "Bright Winter": {
+          badge:"#d9cdfd",
+          desc:"You can handle strong contrast and crisp colour really well.",
+          best:[["Cobalt","#2554c7"],["Fuchsia","#d63384"],["True red","#d72638"],["Emerald","#008f68"],["Electric teal","#08a0a8"],["Royal purple","#6a2cc7"],["Black","#1c1c1c"],["Pure white","#ffffff"]],
+          neutrals:["black","pure white","ink navy","charcoal","cool stone"],
+          avoid:["muddy brown","mustard","warm beige","dusty olive","peach"],
+          women:{
+            outfits:[
+              ["Evening","Black dress + cobalt heel + silver jewellery"],
+              ["Work","Pure white shirt + black tailoring"],
+              ["Weekend","Emerald knit + dark denim + black boot"],
+              ["Statement","Fuchsia top + charcoal trouser + sleek black bag"]
+            ],
+            extras:[
+              ["Jewellery","Silver, chrome and white gold usually look cleaner."],
+              ["Makeup","True red, berry-fuchsia, cool plum and blue-red suit you."]
+            ]
+          },
+          men:{
+            outfits:[
+              ["Office","White shirt + navy suit trouser + black loafer"],
+              ["Smart casual","Cobalt knit + charcoal trouser + black belt"],
+              ["Evening","Black polo + white jeans + sleek black shoe"],
+              ["Statement casual","Emerald overshirt + white tee + dark denim"]
+            ],
+            extras:[
+              ["Metal","Silver nearly always beats warm gold."],
+              ["Easy start","Black, white, navy and one jewel tone is enough."]
+            ]
+          }
+        },
+        "True Winter": {
+          badge:"#cec8fb",
+          desc:"Cool, deep and clean colours usually give you the most presence.",
+          best:[["True red","#cf2336"],["Cobalt","#2854d5"],["Emerald","#00856b"],["Magenta","#bf2f86"],["Royal purple","#5c2aa8"],["Icy blue","#c6e1fa"],["Charcoal","#39434d"],["Pure white","#ffffff"]],
+          neutrals:["black","charcoal","pure white","navy","steel grey"],
+          avoid:["camel","mustard","olive-brown","warm beige","orange"],
+          women:{
+            outfits:[
+              ["Office","White shirt + charcoal tailoring + silver jewellery"],
+              ["Weekend","Icy blue knit + navy denim + black boot"],
+              ["Evening","Black dress + magenta lip + sleek heel"],
+              ["Statement","Cobalt coat + black trouser + white knit"]
+            ],
+            extras:[
+              ["Jewellery","Silver, platinum and bright metallics generally work best."],
+              ["Makeup","Blue-red, cool berry, plum and icy pink suit you."]
+            ]
+          },
+          men:{
+            outfits:[
+              ["Office","White shirt + charcoal trousers + black shoes"],
+              ["Relaxed","Navy knit + black jeans + white sneakers"],
+              ["Evening","Black shirt + charcoal blazer + dark denim"],
+              ["Sharp casual","Icy blue shirt + navy trousers + black loafer"]
+            ],
+            extras:[
+              ["Metal","Silver usually looks more coherent than gold."],
+              ["Easy start","Black, white, charcoal and navy should dominate."]
+            ]
+          }
+        },
+        "Deep Winter": {
+          badge:"#d8d0ff",
+          desc:"Deep, dramatic and polished colour is usually your best zone.",
+          best:[["Oxblood","#6b1f2d"],["Deep emerald","#006b57"],["Ink navy","#1f2f52"],["Plum","#5e325b"],["Burgundy red","#7a2232"],["Dark teal","#0c5a62"],["Black","#131313"],["Winter white","#f6f6f4"]],
+          neutrals:["black","ink navy","charcoal","winter white","cool espresso"],
+          avoid:["camel","yellow-beige","pastel peach","dusty rust","warm tan"],
+          women:{
+            outfits:[
+              ["Evening","Black silk dress + oxblood heel + silver detail"],
+              ["Office","Winter white blouse + ink tailoring + black bag"],
+              ["Weekend","Deep teal knit + black denim + dark boot"],
+              ["Winter","Plum coat + black knit + charcoal trouser"]
+            ],
+            extras:[
+              ["Jewellery","Silver, gunmetal and white gold usually look best."],
+              ["Makeup","Wine, blackberry, cool burgundy and blue-red work well."]
+            ]
+          },
+          men:{
+            outfits:[
+              ["Office","Winter white shirt + ink navy trousers + black shoe"],
+              ["Evening","Black knit + deep teal jacket + charcoal trousers"],
+              ["Weekend","Dark plum polo + black denim + white leather sneaker"],
+              ["Cold weather","Oxblood knit + black coat + charcoal wool trouser"]
+            ],
+            extras:[
+              ["Metal","Silver or gunmetal usually beats yellow gold."],
+              ["Easy start","Black, charcoal, ink navy and one dark jewel tone work well."]
+            ]
+          }
+        }
+      };
+
+      function pretty(v){
+        const map = {
+          light_blonde:"light blonde",
+          golden_blonde:"golden blonde",
+          ash_blonde:"ash blonde",
+          red_auburn:"red / auburn",
+          light_brown:"light brown",
+          medium_brown:"medium brown",
+          dark_brown:"dark brown",
+          black:"black",
+          grey_white:"grey / white",
+          light_blue:"light blue",
+          deep_blue:"deep blue",
+          green:"green",
+          grey:"grey",
+          hazel:"hazel",
+          light_brown_eye:"light brown",
+          dark_brown_eye:"dark brown",
+          very_dark_brown:"very dark brown",
+          fair_cool:"fair, cool or pink undertone",
+          fair_warm:"fair, warm or peach undertone",
+          light_neutral:"light, neutral undertone",
+          medium_cool:"medium, cool undertone",
+          medium_warm:"medium, warm or olive undertone",
+          deep_cool:"deep, cool undertone",
+          deep_warm:"deep, warm undertone",
+          low:"low",
+          medium:"medium",
+          high:"high"
+        };
+        return map[v] || v;
+      }
+
+      function percentPair(a,b){
+        const total = a+b;
+        if(total <= 0) return [50,50];
+        return [Math.round((a/total)*100), Math.round((b/total)*100)];
+      }
+
+      function scoreProfile(hair, eyes, skin, contrast){
+        let warm=0,cool=0,light=0,deep=0,bright=0,soft=0;
+
+        const warmHair=["golden_blonde","red_auburn","light_brown","medium_brown"];
+        const coolHair=["ash_blonde","dark_brown","black","grey_white","light_blonde"];
+        const warmEyes=["green","hazel","light_brown"];
+        const coolEyes=["light_blue","deep_blue","grey","dark_brown","very_dark_brown"];
+        const warmSkin=["fair_warm","medium_warm","deep_warm"];
+        const coolSkin=["fair_cool","medium_cool","deep_cool"];
+
+        if (warmHair.includes(hair)) warm += 2;
+        if (coolHair.includes(hair)) cool += 2;
+        if (warmEyes.includes(eyes)) warm += 1;
+        if (coolEyes.includes(eyes)) cool += 1;
+        if (warmSkin.includes(skin)) warm += 3;
+        if (coolSkin.includes(skin)) cool += 3;
+        if (skin === "light_neutral") { warm += 1; cool += 1; }
+
+        if (["light_blonde","golden_blonde","ash_blonde"].includes(hair)) light += 2;
+        if (["light_blue","grey"].includes(eyes)) light += 1;
+        if (["fair_cool","fair_warm","light_neutral"].includes(skin)) light += 2;
+
+        if (["dark_brown","black"].includes(hair)) deep += 2;
+        if (["dark_brown","very_dark_brown"].includes(eyes)) deep += 1;
+        if (["deep_cool","deep_warm"].includes(skin)) deep += 2;
+
+        if (contrast === "high") bright += 3;
+        if (contrast === "medium") { bright += 1.5; soft += 1.5; }
+        if (contrast === "low") soft += 3;
+
+        if (["light_blonde","grey_white","ash_blonde"].includes(hair)) soft += 1;
+        if (["red_auburn","golden_blonde","black"].includes(hair)) bright += 1;
+
+        return {warm,cool,light,deep,bright,soft};
+      }
+
+      function analyseType(hair, eyes, skin, contrast){
+        const scores = scoreProfile(hair, eyes, skin, contrast);
+        const warmth = scores.warm >= scores.cool ? "warm" : "cool";
+        const depth = scores.light >= scores.deep ? "light" : "deep";
+        const clarity = scores.bright >= scores.soft ? "bright" : "soft";
+
+        let type = "";
+        if (warmth === "warm") {
+          if (depth === "light") {
+            type = clarity === "bright" ? "Light Spring" : "True Spring";
+          } else {
+            type = clarity === "soft" ? "Soft Autumn" : "True Autumn";
+          }
+        } else {
+          if (depth === "light") {
+            type = clarity === "soft" ? "Light Summer" : "True Summer";
+          } else {
+            type = clarity === "bright" ? "Bright Winter" : (contrast === "high" ? "True Winter" : "Deep Winter");
+          }
+        }
+        return { type, scores };
+      }
+
+      function render(){
+        const hair = document.getElementById("hair").value;
+        const eyes = document.getElementById("eyes").value;
+        const skin = document.getElementById("skin").value;
+        const contrast = document.getElementById("contrast").value;
+        const result = document.getElementById("result");
+
+        if(!hair || !eyes || !skin || !contrast){
+          result.innerHTML = `
+            <div class="placeholder">
+              <div>
+                <div class="kicker" style="margin-bottom:8px;">Missing information</div>
+                <h3>Complete all fields first</h3>
+                <p style="max-width:520px;margin:0 auto;line-height:1.8;">
+                  Pick your hair colour, eye colour, complexion and contrast level before running the analysis.
+                </p>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        const analysed = analyseType(hair, eyes, skin, contrast);
+        const type = analysed.type;
+        const score = analysed.scores;
+        const palette = palettes[type];
+        const styleSet = palette[styleGender];
+
+        const warmthPair = percentPair(score.warm, score.cool);
+        const depthPair = percentPair(score.light, score.deep);
+        const clarityPair = percentPair(score.bright, score.soft);
+
+        const swatches = palette.best.map(item => `
+          <div class="swatch">
+            <div class="swatch-color" style="background:${item[1]}"></div>
+            <div class="swatch-name">${item[0]}</div>
+          </div>`).join("");
+
+        const neutrals = palette.neutrals.map(item => `<span class="chip">${item}</span>`).join("");
+        const avoid = palette.avoid.map(item => `<span class="chip">${item}</span>`).join("");
+        const outfits = styleSet.outfits.map(item => `<div class="tile"><strong>${item[0]}</strong><span>${item[1]}</span></div>`).join("");
+        const extras = styleSet.extras.map(item => `<div class="tile"><strong>${item[0]}</strong><span>${item[1]}</span></div>`).join("");
+
+        result.innerHTML = `
+          <div class="top">
+            <div>
+              <div class="badge" style="background:${palette.badge}">Best match: ${type}</div>
+              <h2 class="title">${type}</h2>
+              <p class="title-copy">
+                Based on <strong>${pretty(hair)}</strong> hair, <strong>${pretty(eyes)}</strong> eyes,
+                <strong>${pretty(skin)}</strong> skin, and <strong>${pretty(contrast)}</strong> natural contrast,
+                your best fit is <strong>${type}</strong>. ${palette.desc}
+              </p>
+            </div>
+            <div class="score">
+              <h3>Colour profile</h3>
+              <div class="meter">
+                <div class="meter-label"><span>Warm vs cool</span><span>${warmthPair[0]} / ${warmthPair[1]}</span></div>
+                <div class="bar"><span style="width:${warmthPair[0]}%; background:linear-gradient(90deg,#dd9f5c,#7ca0d8)"></span></div>
+              </div>
+              <div class="meter">
+                <div class="meter-label"><span>Light vs deep</span><span>${depthPair[0]} / ${depthPair[1]}</span></div>
+                <div class="bar"><span style="width:${depthPair[0]}%; background:linear-gradient(90deg,#f1dcc5,#3e434e)"></span></div>
+              </div>
+              <div class="meter">
+                <div class="meter-label"><span>Bright vs soft</span><span>${clarityPair[0]} / ${clarityPair[1]}</span></div>
+                <div class="bar"><span style="width:${clarityPair[0]}%; background:linear-gradient(90deg,#7f49da,#bdb2a5)"></span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>Best colours</h3>
+            <p>These are the safest colours to start with when you buy shirts, knitwear, jackets or accessories.</p>
+            <div class="swatches">${swatches}</div>
+          </div>
+
+          <div class="section">
+            <h3>Best neutrals</h3>
+            <p>Use these for the expensive pieces: coats, jackets, trousers, shoes and bags.</p>
+            <div class="chips">${neutrals}</div>
+          </div>
+
+          <div class="section">
+            <h3>Colours to avoid</h3>
+            <p>These are the shades most likely to fight your natural colouring.</p>
+            <div class="chips">${avoid}</div>
+          </div>
+
+          <div class="section">
+            <h3>${styleGender === "women" ? "Women’s styling ideas" : "Men’s styling ideas"}</h3>
+            <p>Simple combinations that should look sharp without feeling overdone.</p>
+            <div class="grid-2">${outfits}</div>
+          </div>
+
+          <div class="section">
+            <h3>Extra details</h3>
+            <p>Small details matter too. Metal tone, makeup and accessories can help or hurt.</p>
+            <div class="mini-columns">${extras}</div>
+          </div>
+
+          <div class="footer">
+            This is still a browser tool, not a full draping session. But it should give you a strong starting point and save you a lot of bad colour choices.
+          </div>
+        `;
+      }
+
+      function resetForm(){
+        document.getElementById("hair").value = "";
+        document.getElementById("eyes").value = "";
+        document.getElementById("skin").value = "";
+        document.getElementById("contrast").value = "";
+        document.getElementById("result").innerHTML = `
+          <div class="placeholder">
+            <div>
+              <div class="kicker" style="margin-bottom:8px;">Your result</div>
+              <h3>Your palette will show here</h3>
+              <p style="max-width:540px;margin:0 auto;line-height:1.8;">
+                Choose your features, pick men’s or women’s styling examples, and hit the button.
+                You’ll get your best colours, actual swatches, your safest neutrals, colours to avoid, and outfit ideas.
+              </p>
+            </div>
+          </div>
+        `;
+      }
+
+      function setGender(gender){
+        styleGender = gender;
+        document.querySelectorAll(".style-gender").forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.gender === gender);
+        });
+      }
+
+      document.getElementById("analyzeButton").addEventListener("click", render);
+      document.getElementById("resetButton").addEventListener("click", resetForm);
+      document.querySelectorAll(".style-gender").forEach(btn => {
+        btn.addEventListener("click", function(){ setGender(this.dataset.gender); });
+      });
+    })();
+  </script>
 </body>
 </html>
